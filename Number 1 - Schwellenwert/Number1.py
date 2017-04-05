@@ -5,33 +5,26 @@
 
 import numpy as np
 import cv2
+from matplotlib import pyplot as plt
+
 
 def TBChanged(x):
-    r = cv2.getTrackbarPos('R', 'image')
-    g = cv2.getTrackbarPos('G', 'image')
-    b = cv2.getTrackbarPos('B', 'image')
-    s = cv2.getTrackbarPos(switch, 'image')
+    tresh = cv2.getTrackbarPos('tresh', 'image')
 
-    if s == 0:
-        img[:] = 0
-    else:
-        img[:] = [b,g,r]
+    _,result = cv2.threshold(img,tresh,255,cv2.THRESH_BINARY)
+    cv2.imshow('result', result)
 
-    cv2.imshow('image', img)
-
-# Create an empty (black) image
-img = np.zeros((300, 512, 3), np.uint8)
+# Load Image and transform to Grey
+img = cv2.imread('seeds.tif')
+grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+# Create 
 cv2.namedWindow('image', cv2.WINDOW_NORMAL)
-cv2.moveWindow('image', 10, 30)
+cv2.moveWindow('image', 20, 30)
+cv2.namedWindow('result', cv2.WINDOW_NORMAL)
+cv2.moveWindow('result', 450, 30)
 
 # create trackbars for color change
-cv2.createTrackbar('R', 'image', 0, 255, TBChanged)
-cv2.createTrackbar('G', 'image', 0, 255, TBChanged)
-cv2.createTrackbar('B', 'image', 0, 255, TBChanged)
-
-# create switch 
-switch = '0 : OFF \n1 : ON'
-cv2.createTrackbar(switch, 'image', 0, 1, TBChanged)
+cv2.createTrackbar('tresh', 'image', 0, 255, TBChanged)
 
 cv2.imshow('image', img)
 cv2.waitKey(0)
